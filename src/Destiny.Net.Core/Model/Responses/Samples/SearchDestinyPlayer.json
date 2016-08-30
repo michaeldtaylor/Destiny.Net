@@ -1,0 +1,15 @@
+﻿{
+    "Response": [
+        {
+            "iconPath": "/img/theme/destiny/icons/icon_psn.png",
+            "membershipType": 2,
+            "membershipId": "4611686018454433593",
+            "displayName": "Tyridan"
+        }
+    ],
+    "ErrorCode": 1,
+    "ThrottleSeconds": 0,
+    "ErrorStatus": "Success",
+    "Message": "Ok",
+    "MessageData": { }
+}

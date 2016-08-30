@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT/</licenseUrl>
+    <projectUrl>https://github.com/michaeldtaylor/Destiny.Net</projectUrl>
+    <iconUrl>https://github.com/michaeldtaylor/Destiny.Net/nuget-icon.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>An unofficial and opinionated .NET wrapper for the Destiny API</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright Michael D Taylor 2016</copyright>
+    <tags>destiny bungie</tags>
+  </metadata>
+</package>
