@@ -30,12 +30,12 @@ namespace Destiny.Net.Test
 
             Because of = () =>
             {
-                _exception = Catch.Exception(() => _getAccountSummary = CallSync(() => _client.GetAccountSummary(Platform.PlayStation, "Tyridan")));
+                _exception = Catch.Exception(() => _accountSummary = CallSync(() => _client.GetAccountSummary(Platform.PlayStation, "Tyridan")));
             };
 
             It should_throw_a_destiny_client_exception = () =>
             {
-                _getAccountSummary.ShouldBeNull();
+                _accountSummary.ShouldBeNull();
 
                 var destinyClientException = (DestinyClientException)_exception;
 
@@ -44,7 +44,7 @@ namespace Destiny.Net.Test
             };
 
             static Exception _exception;
-            static GetAccountSummaryResponse _getAccountSummary;
+            static AccountSummaryResponse _accountSummary;
         }
 
         public class When_getting_inventory_item
@@ -68,7 +68,7 @@ namespace Destiny.Net.Test
         {
             Because of = () =>
             {
-                _manifestResponse = CallSync(() => _client.GetDestinyManifest());
+                _manifestResponse = CallSync(() => _client.GetManifest());
             };
 
             It should_not_be_null = () =>
@@ -76,37 +76,37 @@ namespace Destiny.Net.Test
                 _manifestResponse.ShouldNotBeNull();
             };
 
-            static GetDestinyManifestResponse _manifestResponse;
+            static ManifestResponse _manifestResponse;
         }
 
-        public class When_getting_known_player
+        public class When_getting_known_bungie_account
         {
             Because of = () =>
             {
-                _getAccountSummaryResponse = CallSync(() => _client.GetAccountSummary(Platform.PlayStation, "Tyridan"));
+                _bungieAccountResponse = CallSync(() => _client.GetBungieAccount("Tyridan", Platform.PlayStation));
             };
 
             It should_have_a_name = () =>
             {
-                _getAccountSummaryResponse.Characters.First().CharacterLevel.ShouldEqual(40);
+                _bungieAccountResponse.DestinyAccounts.First().Characters.First().Level.ShouldEqual(40);
             };
 
-            static GetAccountSummaryResponse _getAccountSummaryResponse;
+            static BungieAccountResponse _bungieAccountResponse;
         }
 
-        public class When_getting_unknown_player
+        public class When_getting_unknown_bungie_account
         {
             Because of = () =>
             {
-                _getAccountSummaryResponse = CallSync(() => _client.GetAccountSummary(Platform.PlayStation, "TyridanUnknownPlayer"));
+                _bungieAccountResponse = CallSync(() => _client.GetBungieAccount("TyridanUnknownPlayer", Platform.PlayStation));
             };
 
             It should_be_null = () =>
             {
-                _getAccountSummaryResponse.ShouldBeNull();
+                _bungieAccountResponse.ShouldBeNull();
             };
 
-            static GetAccountSummaryResponse _getAccountSummaryResponse;
+            static BungieAccountResponse _bungieAccountResponse;
         }
 
         static T CallSync<T>(Func<Task<T>> func)

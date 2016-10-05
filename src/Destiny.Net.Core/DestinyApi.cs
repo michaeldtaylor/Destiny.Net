@@ -5,23 +5,21 @@ using System.Threading.Tasks;
 using Destiny.Net.Core.Model.Responses;
 using Destiny.Net.Core.Response;
 using Newtonsoft.Json;
-using NLog;
 
 namespace Destiny.Net.Core
 {
-    public class DestinyApi : IDisposable
+    public class DestinyApi
     {
-        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        const string DestinyApiEndpoint = "https://www.bungie.net/platform/Destiny";
         const string XApiKey = "X-API-Key";
 
-        readonly HttpClient _client;
+        static readonly Uri BungiePlatformEndpoint = new Uri("https://www.bungie.net/platform/");
+        static readonly HttpClient Client = new HttpClient();
+
+        readonly string _apiKey;
 
         public DestinyApi(string apiKey)
         {
-            _client = new HttpClient();
-            _client.DefaultRequestHeaders.Add(XApiKey, apiKey);
+            _apiKey = apiKey;
         }
 
         public async Task<T> GetSimpleEnvelope<T>(string apiPath) where T : DestinyResponse
@@ -48,15 +46,19 @@ namespace Destiny.Net.Core
             return destinyResponseEnvelope.Response.Data;
         }
 
-        public void Dispose()
-        {
-            _client?.Dispose();
-        }
-
         async Task<string> GetHttpContent(string apiPath)
         {
-            var apiUri = new Uri($"{DestinyApiEndpoint}/{apiPath}/");
-            var httpResponse = await _client.GetAsync(apiUri);
+            Client.DefaultRequestHeaders.Clear();
+            Client.DefaultRequestHeaders.Add(XApiKey, _apiKey);
+
+            var apiUri = new Uri(BungiePlatformEndpoint, apiPath);
+            var httpResponse = await Client.GetAsync(apiUri);
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new DestinyClientException(apiUri, httpResponse.StatusCode);
+            }
+
             var responseContent = await httpResponse.Content.ReadAsStringAsync();
             var destinyResponseEnvelope = JsonConvert.DeserializeObject<DestinyResponseEnvelope>(responseContent);
 
@@ -65,9 +67,7 @@ namespace Destiny.Net.Core
                 return responseContent;
             }
 
-            Logger.Error($"Destiny error code {destinyResponseEnvelope.ErrorCode} occured when calling API URI '{apiUri.AbsolutePath}': {destinyResponseEnvelope.Message}");
-
-            throw new DestinyClientException(apiUri, destinyResponseEnvelope);
+            throw new DestinyClientException(apiUri, httpResponse.StatusCode, destinyResponseEnvelope);
         }
     }
 }

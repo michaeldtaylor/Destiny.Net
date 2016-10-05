@@ -51,24 +51,34 @@
     <Compile Include="DestinyApi.cs" />
     <Compile Include="DestinyClientException.cs" />
     <Compile Include="DestinyErrorCodes.cs" />
+    <Compile Include="DestinyApiPaths.cs" />
+    <Compile Include="Model\CharacterClass.cs" />
+    <Compile Include="Model\DestinyAccountCharacter.cs" />
+    <Compile Include="Model\Gender.cs" />
+    <Compile Include="Model\Race.cs" />
+    <Compile Include="Model\Responses\BungieAccountResponse.cs" />
+    <Compile Include="Model\Clan.cs" />
+    <Compile Include="Model\DestinyAccount.cs" />
     <Compile Include="Model\Responses\DestinyManifestResponse.cs" />
-    <Compile Include="Model\Responses\GetDestinyManifestResponse.cs" />
+    <Compile Include="Model\Responses\ManifestResponse.cs" />
     <Compile Include="Model\MobileGearAssetDataBase.cs" />
     <Compile Include="Model\MobileGearCDN.cs" />
     <Compile Include="Model\MobileWorldContentPaths.cs" />
+    <Compile Include="Model\RelatedGroup.cs" />
+    <Compile Include="Model\UserInfo.cs" />
     <Compile Include="Response\DestinyResponseEnvelope.cs" />
     <Compile Include="Response\DestinySimpleCollectionResponseEnvelope.cs" />
     <Compile Include="Model\CharacterBase.cs" />
-    <Compile Include="Model\Character.cs" />
+    <Compile Include="Model\AccountSummaryCharacter.cs" />
     <Compile Include="Model\Responses\InventoryItemResponse.cs" />
     <Compile Include="Response\DestinyMessageData.cs" />
     <Compile Include="Response\DestinyDataResponse.cs" />
     <Compile Include="Response\DestinyDataResponseEnvelope.cs" />
     <Compile Include="Model\LevelProgression.cs" />
-    <Compile Include="Model\Responses\GetAccountSummaryResponse.cs" />
+    <Compile Include="Model\Responses\AccountSummaryResponse.cs" />
     <Compile Include="Model\Responses\DestinyResponse.cs" />
     <Compile Include="Model\InventoryItem.cs" />
-    <Compile Include="Model\Responses\SearchDestinyPlayerResponse.cs" />
+    <Compile Include="Model\Responses\DestinyPlayerResponse.cs" />
     <Compile Include="Model\Platform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response\DestinySimpleResponseEnvelope.cs" />
@@ -79,6 +89,7 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Model\Responses\Samples\GetDestinyAccount.json" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

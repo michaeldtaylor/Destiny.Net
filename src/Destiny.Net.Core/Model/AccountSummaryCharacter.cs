@@ -1,6 +1,6 @@
 namespace Destiny.Net.Core.Model
 {
-    public class Character
+    public class AccountSummaryCharacter
     {
         public CharacterBase CharacterBase { get; set; }
         public LevelProgression LevelProgression { get; set; }
