@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Destiny.Net.Core;
@@ -107,6 +108,36 @@ namespace Destiny.Net.Test
             };
 
             static BungieAccountResponse _bungieAccountResponse;
+        }
+
+        public class When_searching_for_destiny_group
+        {
+            Because of = () =>
+            {
+                _groupSearchResponse = CallSync(() => _client.GroupSearch("DoD Graveyard Shift"));
+            };
+
+            It should_not_be_null = () =>
+            {
+                _groupSearchResponse.ShouldNotBeNull();
+            };
+
+            static GroupSearchResponse _groupSearchResponse;
+        }
+
+        public class When_searching_for_destiny_group_members
+        {
+            Because of = () =>
+            {
+                _membersResult = CallSync(() => _client.GetMembersOfGroup("886149"));
+            };
+
+            It should_not_be_null = () =>
+            {
+                _membersResult.ShouldNotBeNull();
+            };
+
+            static List<MemberResult> _membersResult;
         }
 
         static T CallSync<T>(Func<Task<T>> func)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Destiny.Net.Core.Model;
 using Destiny.Net.Core.Model.Responses;
@@ -34,7 +35,7 @@ namespace Destiny.Net.Core
                 throw new ArgumentNullException(nameof(displayName));
             }
 
-            // https://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/2/Tyridan/
+            // https://www.bungie.net/platform/Destiny/SearchDestinyPlayer/2/Tyridan/
             var apiPath = DestinyApiPaths.SearchDestinyPlayerApiPath((int)platform, displayName);
 
             return await _destinyApi.GetSimpleCollectionEnvelope<DestinyPlayerResponse>(apiPath);
@@ -78,6 +79,58 @@ namespace Destiny.Net.Core
             var apiPath = DestinyApiPaths.BungieAccountApiPath(envelope.MembershipId, (int)platform);
 
             return await _destinyApi.GetSimpleEnvelope<BungieAccountResponse>(apiPath);
+        }
+
+        public async Task<GroupSearchResponse> GroupSearch(string groupName)
+        {
+            if (string.IsNullOrEmpty(groupName))
+            {
+                throw new ArgumentNullException(nameof(groupName));
+            }
+
+            // https://www.bungie.net/platform/Group/Search/
+            var apiPath = DestinyApiPaths.GroupSearchApiPath();
+
+            var query = new GroupSearchQuery
+            {
+                Contents =
+                {
+                    SearchType = 0,
+                    SearchValue = groupName
+                },
+                CreationDate = 0,
+                SortBy = 0,
+                ItemsPerPage = 10,
+                CurrentPage = 1,
+                MembershipType = 0,
+                TagText = string.Empty,
+                LocaleFilter = "en",
+                GroupMemberCountFilter = 0
+            };
+
+            return await _destinyApi.Post<GroupSearchResponse>(apiPath, query);
+        }
+
+        public async Task<List<MemberResult>> GetMembersOfGroup(string groupId)
+        {
+            GroupMembersResponse response;
+
+            var memberResults = new List<MemberResult>();
+            var currentPage = 1;
+
+            do
+            {
+                // https://www.bungie.net/Group/886149/MembersV3/
+                var apiPath = DestinyApiPaths.GroupMembersApiPath(groupId, 50, currentPage);
+                
+                response = await _destinyApi.GetSimpleEnvelope<GroupMembersResponse>(apiPath);
+
+                memberResults.AddRange(response.results);
+
+                currentPage++;
+            } while (response.hasMore);
+
+            return memberResults;
         }
 
         // TODO: This doesn't actually need an API key!

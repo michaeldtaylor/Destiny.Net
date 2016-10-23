@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Destiny.Net.Core.Model.Responses;
 using Destiny.Net.Core.Response;
@@ -11,6 +12,7 @@ namespace Destiny.Net.Core
     public class DestinyApi
     {
         const string XApiKey = "X-API-Key";
+        const string ApplicationJsonMediaType = "application/json";
 
         static readonly Uri BungiePlatformEndpoint = new Uri("https://www.bungie.net/platform/");
         static readonly HttpClient Client = new HttpClient();
@@ -46,20 +48,50 @@ namespace Destiny.Net.Core
             return destinyResponseEnvelope.Response.Data;
         }
 
+        public async Task<T> Post<T>(string apiPath, object value) where T : DestinyResponse
+        {
+            Client.DefaultRequestHeaders.Clear();
+            Client.DefaultRequestHeaders.Add(XApiKey, _apiKey);
+
+            var apiUri = new Uri(BungiePlatformEndpoint, apiPath);
+            var content = JsonConvert.SerializeObject(value);
+            var request = new HttpRequestMessage(HttpMethod.Post, apiUri)
+            {
+                Content = new StringContent(content, Encoding.UTF8, ApplicationJsonMediaType)
+            };
+
+            var response = await Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            DestinySimpleResponseEnvelope<T> destinyResponseEnvelope = null;
+
+            if (response.IsSuccessStatusCode)
+            {
+                destinyResponseEnvelope = JsonConvert.DeserializeObject<DestinySimpleResponseEnvelope<T>>(responseContent);
+
+                if (destinyResponseEnvelope.ErrorCode == DestinyErrorCodes.Ok)
+                {
+                    return destinyResponseEnvelope.Response;
+                }
+            }
+
+            throw new DestinyClientException(apiUri, response.StatusCode, destinyResponseEnvelope);
+        }
+
         async Task<string> GetHttpContent(string apiPath)
         {
             Client.DefaultRequestHeaders.Clear();
             Client.DefaultRequestHeaders.Add(XApiKey, _apiKey);
 
             var apiUri = new Uri(BungiePlatformEndpoint, apiPath);
-            var httpResponse = await Client.GetAsync(apiUri);
+            var response = await Client.GetAsync(apiUri);
 
-            if (!httpResponse.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                throw new DestinyClientException(apiUri, httpResponse.StatusCode);
+                throw new DestinyClientException(apiUri, response.StatusCode);
             }
 
-            var responseContent = await httpResponse.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
             var destinyResponseEnvelope = JsonConvert.DeserializeObject<DestinyResponseEnvelope>(responseContent);
 
             if (destinyResponseEnvelope.ErrorCode == DestinyErrorCodes.Ok)
@@ -67,7 +99,7 @@ namespace Destiny.Net.Core
                 return responseContent;
             }
 
-            throw new DestinyClientException(apiUri, httpResponse.StatusCode, destinyResponseEnvelope);
+            throw new DestinyClientException(apiUri, response.StatusCode, destinyResponseEnvelope);
         }
     }
 }

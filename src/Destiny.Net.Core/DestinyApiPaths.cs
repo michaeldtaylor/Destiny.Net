@@ -17,6 +17,16 @@ namespace Destiny.Net.Core
             return $"Destiny/SearchDestinyPlayer/{membershipType}/{displayName}/";
         }
 
+        public static string GroupSearchApiPath()
+        {
+            return "Group/Search/";
+        }
+
+        public static string GroupMembersApiPath(string groupId, int itemsPerPage = 10, int currentPage = 1)
+        {
+            return $"Group/{groupId}/MembersV3/?itemsPerPage={itemsPerPage}&currentPage={currentPage}&memberType=-1&sort=0";
+        }
+
         public static string ManifestApiPath()
         {
             return "Destiny/Manifest/";

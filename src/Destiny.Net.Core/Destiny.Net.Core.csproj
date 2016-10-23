@@ -52,6 +52,9 @@
     <Compile Include="DestinyClientException.cs" />
     <Compile Include="DestinyErrorCodes.cs" />
     <Compile Include="DestinyApiPaths.cs" />
+    <Compile Include="Model\GroupSearchContents.cs" />
+    <Compile Include="Model\GroupSearchQuery.cs" />
+    <Compile Include="Model\Responses\GroupSearchResponse.cs" />
     <Compile Include="Model\CharacterClass.cs" />
     <Compile Include="Model\DestinyAccountCharacter.cs" />
     <Compile Include="Model\Gender.cs" />
